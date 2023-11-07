@@ -16,6 +16,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      {/* headタグとその中にアイコンやテーマカラー、manifestを記述する */}
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icon.png"></link>
+        <meta name="theme-color" content="#4D411F" />
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   )
