@@ -2,12 +2,15 @@
 
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
+import {Judgment}  from "@/api/fileJudgment";
 
 const UploadForm = () => {
   const [createImageURL, setCreateImageURL] = useState<string>("");
-  const [uploadSuccess, setUploadSuccess] = useState<boolean | null>(false);
+  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<boolean | null>(null);
+  const [judgmentError, setJudgmentError] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
+
 
   const uploadToClient = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -24,7 +27,26 @@ const UploadForm = () => {
       }
     }
   };
-
+  const fileJudgment = async () => {
+    if (image) {
+      try {
+        const res = await Judgment(image);
+        console.log(res.tags);
+        setJudgmentError(false);
+      } catch (error) {
+        setJudgmentError(true);
+        console.error("File upload error:", error);
+      }
+    } else {
+      setUploadError(true);
+    }
+  };
+  const handleReset = () =>{
+    setCreateImageURL("")
+    setUploadSuccess(false);
+    setUploadError(false);
+    setJudgmentError(false);
+  }
   return (
     <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
       <div className="mx-auto max-w-2xl">
@@ -78,15 +100,29 @@ const UploadForm = () => {
                 </div>
               </div>
             </div>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <button
-                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                判定する
-              </button>
-            </div>
           </form>
         )}
+        <div className="mt-10 flex items-center justify-center gap-x-6">
+          <button
+            className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={fileJudgment}
+          >
+            判定する
+          </button>
+          {uploadSuccess === true && (
+            <button
+              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={handleReset}
+            >
+              リセット
+            </button>
+          )}
+        </div>
+        {judgmentError === true && (
+                    <p className="text-xs mt-4 text-center text-red-600">
+                      判定中にエラーが発生しました。
+                    </p>
+                  )}
       </div>
     </div>
   );
