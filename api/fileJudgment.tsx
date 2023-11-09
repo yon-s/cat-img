@@ -5,7 +5,7 @@ export const Judgment = async (image: File) : Promise<any>=> {
   formData.append('image', image);
 
   try {
-    const response = await axios.post('/api/upload', formData, {
+    const response = await axios.post('http://localhost:3000/api/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

@@ -3,7 +3,6 @@
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import {Judgment}  from "@/api/fileJudgment";
-import { useRouter } from 'next/navigation';
 
 const UploadForm = () => {
   const [createImageURL, setCreateImageURL] = useState<string>("");
@@ -12,7 +11,6 @@ const UploadForm = () => {
   const [judgmentError, setJudgmentError] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
 
-  const router = useRouter();
 
   const uploadToClient = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -33,7 +31,8 @@ const UploadForm = () => {
     if (image) {
       try {
         const res = await Judgment(image);
-        console.log(res);
+        console.log(res.tags);
+        setJudgmentError(false);
       } catch (error) {
         setJudgmentError(true);
         console.error("File upload error:", error);
@@ -46,6 +45,7 @@ const UploadForm = () => {
     setCreateImageURL("")
     setUploadSuccess(false);
     setUploadError(false);
+    setJudgmentError(false);
   }
   return (
     <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
