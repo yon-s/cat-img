@@ -10,6 +10,7 @@ const UploadForm = () => {
   const [uploadError, setUploadError] = useState<boolean | null>(null);
   const [judgmentError, setJudgmentError] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
+  const [jugement, setJugement] = useState<string| null>(null)
 
 
   const uploadToClient = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,9 +31,14 @@ const UploadForm = () => {
   const fileJudgment = async () => {
     if (image) {
       try {
-        const res = await Judgment(image);
-        console.log(res.tags);
         setJudgmentError(false);
+        const res = await Judgment(image);
+        const resArray = res.tags.includes('Cat')
+        if(resArray){
+          setJugement('これは猫です')
+        }else{
+          setJugement('これは猫ではありません');
+        }
       } catch (error) {
         setJudgmentError(true);
         console.error("File upload error:", error);
@@ -119,10 +125,15 @@ const UploadForm = () => {
           )}
         </div>
         {judgmentError === true && (
-                    <p className="text-xs mt-4 text-center text-red-600">
-                      判定中にエラーが発生しました。
-                    </p>
-                  )}
+          <p className="text-xs mt-4 text-center text-red-600">
+            判定中にエラーが発生しました。
+          </p>
+        )}
+        {jugement && (
+          <p className="mt-10 text-2xl text-center underline">
+            {jugement}
+          </p>
+        )}
       </div>
     </div>
   );
