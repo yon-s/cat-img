@@ -1,6 +1,9 @@
 import axios from 'axios';
+interface IErrorResponse {
+  error: string;
+}
 
-export const Judgment = async (image: File) : Promise<any>=> {
+export const Judgment = async (image: File) : Promise<{ tags: string[] }>=> {
   const formData = new FormData();
   formData.append('image', image);
 
@@ -10,9 +13,13 @@ export const Judgment = async (image: File) : Promise<any>=> {
         'Content-Type': 'multipart/form-data',
       },
     });
-
+    console.log(response.data)
     return response.data;
-  } catch (error:any) {
-    throw new Error('Image upload error: ' + error.message);
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response && e.response.status === 400) {
+      throw new Error('400 Error!!');
+    }else {
+      throw e;
+    }
   }
 };
