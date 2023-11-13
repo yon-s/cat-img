@@ -1,11 +1,10 @@
 "use client";
 
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import { DragEvent,useState } from "react";
-import {Judgment}  from "@/api/fileJudgment";
-import Head from 'next/head';
+import { DragEvent, useState } from "react";
+import { Judgment } from "@/api/fileJudgment";
+import Head from "next/head";
 import { lodingMessage } from "@/const/lodingMessage";
-
 
 const UploadForm = () => {
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
@@ -13,12 +12,15 @@ const UploadForm = () => {
   const [uploadError, setUploadError] = useState<boolean | null>(null);
   const [judgmentError, setJudgmentError] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
-  const [jugement, setJugement] = useState<string| null>(null)
+  const [jugement, setJugement] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
-  const fileTypeJpeg = 'image/jpeg'
-  const fileTypePng = 'image/png'
-  const FileSize = 10 * 1024 * 1024
-  const fileUploaderClassName = 'mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10';
+  const fileTypeJpeg = "image/jpeg";
+  const fileTypePng = "image/png";
+  const FileSize = 10 * 1024 * 1024;
+  const fileUploaderClassName =
+    "mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10";
+  const noticeTxt = "※明るくて被写体が大きく写った画像だと精度が上がります";
 
   const onDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -36,7 +38,7 @@ const UploadForm = () => {
   };
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
-    const onDropAlert = 'ファイルは１個まで！';
+    const onDropAlert = "ファイルは１個まで！";
     e.preventDefault();
     setIsDragActive(false);
     if (e.dataTransfer.files !== null && e.dataTransfer.files.length > 0) {
@@ -73,25 +75,27 @@ const UploadForm = () => {
     }
   };
   const fileJudgment = async () => {
-    const jugeCat = 'Cat';
-    const jugeTail = 'Tail';
-    const jugementMessageTrue = 'これは猫です';
-    const jugementMessageInterime = '猫かは分かりませんが動物です';
-    const jugementMessageFlase = 'これは猫ではありません';
+    const jugeCat = "Cat";
+    const jugeTail = "Tail";
+    const jugementMessageTrue = "これは猫です";
+    const jugementMessageInterime = "猫かは分かりませんが動物です";
+    const jugementMessageFlase = "これは猫ではありません";
     if (image) {
       setJugement(lodingMessage);
       try {
         setJudgmentError(false);
         const res = await Judgment(image);
-        console.log(res.tags)
+        console.log(res.tags);
         const resArrayCat = res.tags.includes(jugeCat);
         const resArrayTail = res.tags.includes(jugeTail);
-        if(resArrayCat){
+        if (resArrayCat) {
           setJugement(jugementMessageTrue);
-        }else if(resArrayTail){
+        } else if (resArrayTail) {
           setJugement(jugementMessageInterime);
-        }else{
+          setNotice(noticeTxt);
+        } else {
           setJugement(jugementMessageFlase);
+          setNotice(noticeTxt);
         }
       } catch (error) {
         setJudgmentError(true);
@@ -101,18 +105,19 @@ const UploadForm = () => {
       setUploadError(true);
     }
   };
-  const handleReset = () =>{
-    setCreateImageURL("")
-    setImage(null)
+  const handleReset = () => {
+    setCreateImageURL("");
+    setImage(null);
     setUploadError(false);
     setJudgmentError(false);
-    setJugement(null)
-  }
-  const ogTitle = jugement || '猫判定アプリ';
+    setJugement(null);
+    setNotice(null);
+  };
+  const ogTitle = jugement || "猫判定アプリ";
   const ogDescription = jugement
     ? `画像判定の結果:${jugement}`
-    : '猫かどうかを画像から判定します';
-  const ogImage = jugement ? createImageURL : '/icon-512x512.png';
+    : "猫かどうかを画像から判定します";
+  const ogImage = jugement ? createImageURL : "/icon-512x512.png";
 
   return (
     <>
@@ -136,11 +141,16 @@ const UploadForm = () => {
                   className="block text-sm font-medium leading-6 text-gray-900"
                 ></label>
                 <div
-                onDragEnter={onDragEnter}
-                onDragLeave={onDragLeave}
-                onDragOver={onDragOver}
-                onDrop={onDrop}
-                 className={isDragActive ? fileUploaderClassName + ' opacity-50' : fileUploaderClassName}>
+                  onDragEnter={onDragEnter}
+                  onDragLeave={onDragLeave}
+                  onDragOver={onDragOver}
+                  onDrop={onDrop}
+                  className={
+                    isDragActive
+                      ? fileUploaderClassName + " opacity-50"
+                      : fileUploaderClassName
+                  }
+                >
                   <div className="text-center">
                     <PhotoIcon
                       className="mx-auto h-12 w-12 text-gray-300"
@@ -172,21 +182,18 @@ const UploadForm = () => {
                     )}
                   </div>
                 </div>
-                <p className="text-xs leading-5 text-red-600 text-center mt-2">
-                      ※明るくて被写体が大きく写った画像だと精度が上がります
-                    </p>
               </div>
             </form>
           )}
           <div className="mt-10 flex items-center justify-center gap-x-6">
-          {image && (
-            <button
-              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={fileJudgment}
-            >
-              判定する
-            </button>
-          )}
+            {image && (
+              <button
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={fileJudgment}
+              >
+                判定する
+              </button>
+            )}
             {image && (
               <button
                 className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -202,19 +209,24 @@ const UploadForm = () => {
             </p>
           )}
           {jugement && (
-            <p className="mt-10 text-2xl text-center underline">
-              {jugement}
+            <p className="mt-10 text-2xl text-center underline">{jugement}</p>
+          )}
+          {notice ? (
+            <p className="text-xs leading-5 text-red-600 text-center mt-2">
+              {noticeTxt}
             </p>
+          ) : (
+            ""
           )}
         </div>
       </div>
-       <Head>
+      <Head>
         <meta property="og:title" content={ogTitle} />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:image" content={ogImage} />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-    </>  
+    </>
   );
 };
 export default UploadForm;
