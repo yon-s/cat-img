@@ -1,23 +1,64 @@
 "use client";
 
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { DragEvent,useState } from "react";
 import {Judgment}  from "@/api/fileJudgment";
 import Head from 'next/head';
 import { lodingMessage } from "@/const/lodingMessage";
 
 
 const UploadForm = () => {
+  const [isDragActive, setIsDragActive] = useState<boolean>(false);
   const [createImageURL, setCreateImageURL] = useState<string>("");
   const [uploadError, setUploadError] = useState<boolean | null>(null);
   const [judgmentError, setJudgmentError] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
   const [jugement, setJugement] = useState<string| null>(null)
 
+  const fileTypeJpeg = 'image/jpeg'
+  const fileTypePng = 'image/png'
+  const FileSize = 10 * 1024 * 1024
+  const fileUploaderClassName = 'mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10';
+
+  const onDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragActive(true);
+  };
+
+  const onDragEnter = (e: DragEvent<HTMLDivElement>) => {
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      setIsDragActive(true);
+    }
+  };
+
+  const onDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    setIsDragActive(false);
+  };
+
+  const onDrop = (e: DragEvent<HTMLDivElement>) => {
+    const onDropAlert = 'ファイルは１個まで！';
+    e.preventDefault();
+    setIsDragActive(false);
+    if (e.dataTransfer.files !== null && e.dataTransfer.files.length > 0) {
+      if (e.dataTransfer.files.length === 1) {
+        const file = e.dataTransfer.files[0];
+        if (
+          (file.type === fileTypeJpeg || file.type === fileTypePng) &&
+          file.size <= FileSize
+        ) {
+          setCreateImageURL(URL.createObjectURL(file));
+          setImage(file);
+        } else {
+          setUploadError(true);
+        }
+      } else {
+        alert(onDropAlert);
+      }
+    }
+    e.dataTransfer.clearData();
+  };
+
   const uploadToClient = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fileTypeJpeg = "image/jpeg"
-    const fileTypePng = "image/png"
-    const FileSize = 10 * 1024 * 1024
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (
@@ -81,7 +122,7 @@ const UploadForm = () => {
             猫かどうかを判別します
           </h1>
           {image && (
-            <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+            <div className={fileUploaderClassName}>
               <div className="text-center">
                 <img src={createImageURL} />
               </div>
@@ -94,7 +135,12 @@ const UploadForm = () => {
                   htmlFor="cover-photo"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 ></label>
-                <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                <div
+                onDragEnter={onDragEnter}
+                onDragLeave={onDragLeave}
+                onDragOver={onDragOver}
+                onDrop={onDrop}
+                 className={isDragActive ? fileUploaderClassName + ' opacity-50' : fileUploaderClassName}>
                   <div className="text-center">
                     <PhotoIcon
                       className="mx-auto h-12 w-12 text-gray-300"
@@ -114,7 +160,7 @@ const UploadForm = () => {
                           onChange={uploadToClient}
                         />
                       </label>
-                      <p className="pl-1">もしくはドロップ&ドロップ</p>
+                      <p className="pl-1">もしくはドラッグ&ドロップ</p>
                     </div>
                     <p className="text-xs leading-5 text-gray-600">
                       PNGかJPGの10MBまでの画像
