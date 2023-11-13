@@ -4,6 +4,7 @@ import { PhotoIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import {Judgment}  from "@/api/fileJudgment";
 import Head from 'next/head';
+import { lodingMessage } from "@/const/lodingMessage";
 
 
 const UploadForm = () => {
@@ -13,13 +14,15 @@ const UploadForm = () => {
   const [image, setImage] = useState<File | null>(null);
   const [jugement, setJugement] = useState<string| null>(null)
 
-
   const uploadToClient = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileTypeJpeg = "image/jpeg"
+    const fileTypePng = "image/png"
+    const FileSize = 10 * 1024 * 1024
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (
-        (file.type === "image/jpeg" || file.type === "image/png") &&
-        file.size <= 10 * 1024 * 1024
+        (file.type === fileTypeJpeg || file.type === fileTypePng) &&
+        file.size <= FileSize
       ) {
         setCreateImageURL(URL.createObjectURL(file));
         setImage(file);
@@ -29,16 +32,25 @@ const UploadForm = () => {
     }
   };
   const fileJudgment = async () => {
+    const jugeCat = 'Cat';
+    const jugeTail = 'Tail';
+    const jugementMessageTrue = 'これは猫です';
+    const jugementMessageInterime = '猫かは分かりませんが動物です';
+    const jugementMessageFlase = 'これは猫ではありません';
     if (image) {
-      setJugement('判定中...');
+      setJugement(lodingMessage);
       try {
         setJudgmentError(false);
         const res = await Judgment(image);
-        const resArray = res.tags.includes('Cat')
-        if(resArray){
-          setJugement('これは猫です');
+        console.log(res.tags)
+        const resArrayCat = res.tags.includes(jugeCat);
+        const resArrayTail = res.tags.includes(jugeTail);
+        if(resArrayCat){
+          setJugement(jugementMessageTrue);
+        }else if(resArrayTail){
+          setJugement(jugementMessageInterime);
         }else{
-          setJugement('これは猫ではありません');
+          setJugement(jugementMessageFlase);
         }
       } catch (error) {
         setJudgmentError(true);
@@ -55,7 +67,6 @@ const UploadForm = () => {
     setJudgmentError(false);
     setJugement(null)
   }
-  // OGPメタタグの値を動的に生成
   const ogTitle = jugement || '猫判定アプリ';
   const ogDescription = jugement
     ? `画像判定の結果:${jugement}`
@@ -109,12 +120,15 @@ const UploadForm = () => {
                       PNGかJPGの10MBまでの画像
                     </p>
                     {uploadError === true && (
-                      <p className="text-xs leading-5 text-red-600">
-                        JPEGかPNGファイルの10MB以内でお願いします
+                      <p className="text-xs leading-5 text-red-600 ">
+                        JPEGかPNGファイルの10MB以内のでお願いします
                       </p>
                     )}
                   </div>
                 </div>
+                <p className="text-xs leading-5 text-red-600 text-center mt-2">
+                      ※明るくて被写体が大きく写った画像だと精度が上がります
+                    </p>
               </div>
             </form>
           )}
@@ -148,12 +162,10 @@ const UploadForm = () => {
           )}
         </div>
       </div>
-       {/* OGPメタタグ */}
        <Head>
         <meta property="og:title" content={ogTitle} />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:image" content={ogImage} />
-        {/* Twitterカード用メタタグ */}
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
     </>  
