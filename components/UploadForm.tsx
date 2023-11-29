@@ -2,6 +2,7 @@
 
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { DragEvent, useState } from "react";
+import Image from 'next/image';
 import { Judgment } from "@/api/fileJudgment";
 import Head from "next/head";
 import { lodingMessage } from "@/const/lodingMessage";
@@ -33,7 +34,7 @@ const UploadForm = () => {
     }
   };
 
-  const onDragLeave = (e: DragEvent<HTMLDivElement>) => {
+  const onDragLeave = () => {
     setIsDragActive(false);
   };
 
@@ -128,8 +129,8 @@ const UploadForm = () => {
           </h1>
           {image && (
             <div className={fileUploaderClassName}>
-              <div className="text-center">
-                <img src={createImageURL} />
+              <div className="text-center relative w-full h-96">
+                <Image src={createImageURL} fill className="object-contain" alt="uploadされた画像"/>
               </div>
             </div>
           )}

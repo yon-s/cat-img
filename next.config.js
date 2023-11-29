@@ -1,7 +1,14 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
-
+const nextConfig = {
+  reactStrictMode: true,
+  trailingSlash: true,
+  experimental: {
+    webpackBuildWorkers: true,
+  },
+  output: 'export'
+}
 module.exports = nextConfig
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,

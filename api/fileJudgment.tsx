@@ -1,14 +1,11 @@
 import axios from 'axios';
-interface IErrorResponse {
-  error: string;
-}
 
 export const Judgment = async (image: File) : Promise<{ tags: string[] }>=> {
   const formData = new FormData();
   formData.append('image', image);
 
   try {
-    const response = await axios.post('http://localhost:3000/api/upload', formData, {
+    const response = await axios.post('https://api.judging-cats.com/api/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
