@@ -1,31 +1,23 @@
-name: Manually deploy my-next-app
-on: workflow_dispatch
+# アクション名
+name: Jest
+
+# タイミングを指定
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
 
 jobs:
-  deploy:
+  Test:
+    name: Run test codes
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup node
+      - uses: actions/checkout@v3
+      - name: Install and cache nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-
-      - name: Install Dependencies
+          node-version: '18'
+          cache: 'yarn'
+      - name: Install packages
         run: yarn install
-
-      - name: Build
-        run: yarn build
-
-      - name: Deploy
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
-        run: |
-          echo "AWS s3 sync"
-          aws s3 sync --region ap-northeast-1 ./out s3://${{ secrets.AWS_S3_BUCKET}} --delete
-          echo "AWS CF reset"
-          aws cloudfront create-invalidation --region ap-northeast-1 --distribution-id ${{ secrets.AWS_CF_ID }} --paths "/*"
+      - name: Show coverage
+        run: yarn jest
