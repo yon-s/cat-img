@@ -22,7 +22,6 @@ const UploadForm = () => {
   const fileUploaderClassName =
     "mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10";
   const noticeTxt = "※明るくて被写体が大きく写った画像だと精度が上がります";
-
   const onDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragActive(true);
@@ -86,7 +85,6 @@ const UploadForm = () => {
       try {
         setJudgmentError(false);
         const res = await Judgment(image);
-        console.log(res.tags);
         const resArrayCat = res.tags.includes(jugeCat);
         const resArrayTail = res.tags.includes(jugeTail);
         if (resArrayCat) {
