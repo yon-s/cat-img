@@ -1,19 +1,19 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { SEO_DEFAULT } from "@/utils/seo-config";
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: '猫判定アプリ',
-  description: '画像から猫かどうかを判別します',
-}
+
+export const metadata: Metadata = SEO_DEFAULT;
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
   return (
     <html lang="en">
       {/* headタグとその中にアイコンやテーマカラー、manifestを記述する */}
