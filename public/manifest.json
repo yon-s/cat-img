@@ -4,9 +4,9 @@
     "display": "standalone",
     "scope": "/",
     "start_url": "/",
-    "name": "cat-img",
-    "short_name": "pwa",
-    "description": "\u732b\u3092\u5224\u5b9a\u3059\u308b\u753b\u50cf\u8a8d\u8b58\u30a2\u30d7\u30ea\u306e\u30ea\u30dd\u30b8\u30c8\u30ea",
+    "name": "猫判定アプリ",
+    "short_name": "猫判定アプリ",
+    "description": "画像から猫かどうかを判定します",
     "icons": [
         {
             "src": "/icon-192x192.png",
