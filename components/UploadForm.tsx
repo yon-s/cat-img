@@ -4,7 +4,6 @@ import { PhotoIcon } from "@heroicons/react/24/solid";
 import { DragEvent, useState } from "react";
 import Image from 'next/image';
 import { Judgment } from "@/api/fileJudgment";
-import Head from "next/head";
 import { lodingMessage } from "@/const/lodingMessage";
 
 const UploadForm = () => {
@@ -112,12 +111,6 @@ const UploadForm = () => {
     setJugement(null);
     setNotice(null);
   };
-  const ogTitle = jugement || "猫判定アプリ";
-  const ogDescription = jugement
-    ? `画像判定の結果:${jugement}`
-    : "猫かどうかを画像から判定します";
-  const ogImage = jugement ? createImageURL : "/icon-512x512.png";
-
   return (
     <>
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
@@ -208,7 +201,9 @@ const UploadForm = () => {
             </p>
           )}
           {jugement && (
-            <p className="mt-10 text-2xl text-center underline">{jugement}</p>
+            <>
+            <p className="mt-10 text-2xl text-center underline">{jugement}</p>            
+            </>
           )}
           {notice ? (
             <p className="text-xs leading-5 text-red-600 text-center mt-2">
@@ -219,12 +214,6 @@ const UploadForm = () => {
           )}
         </div>
       </div>
-      <Head>
-        <meta property="og:title" content={ogTitle} />
-        <meta property="og:description" content={ogDescription} />
-        <meta property="og:image" content={ogImage} />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Head>
     </>
   );
 };
