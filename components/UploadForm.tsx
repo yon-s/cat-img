@@ -1,12 +1,16 @@
 "use client";
 
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import { DragEvent, useState } from "react";
+import { DragEvent, useState,useEffect } from "react";
 import Image from 'next/image';
 import { Judgment } from "@/api/fileJudgment";
 import { lodingMessage } from "@/const/lodingMessage";
+import {siteName, description, img} from "@/const/ogp";
+import { Dispatch, SetStateAction } from "react";
+import {chengeOgps} from "@/types/object";
 
-const UploadForm = () => {
+const UploadForm = (props: { ogp: Dispatch<SetStateAction<chengeOgps>> }) => {
+  const { ogp} = props;
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
   const [createImageURL, setCreateImageURL] = useState<string>("");
   const [uploadError, setUploadError] = useState<boolean | null>(null);
@@ -14,6 +18,16 @@ const UploadForm = () => {
   const [image, setImage] = useState<File | null>(null);
   const [jugement, setJugement] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  
+  const descriptionBeforeTxt = '画像解析の結果';
+  
+  useEffect(() => {
+        ogp({
+          img: jugement ? createImageURL : img,
+          title: jugement ? `${jugement} | ${siteName} ` : siteName, 
+          description: jugement ? `${descriptionBeforeTxt}${jugement}` : description,
+        });
+  }, [jugement,createImageURL,ogp]);
 
   const fileTypeJpeg = "image/jpeg";
   const fileTypePng = "image/png";
@@ -94,7 +108,7 @@ const UploadForm = () => {
         } else {
           setJugement(jugementMessageFlase);
           setNotice(noticeTxt);
-        }
+        } 
       } catch (error) {
         setJudgmentError(true);
         console.error("File upload error:", error);
@@ -202,7 +216,7 @@ const UploadForm = () => {
           )}
           {jugement && (
             <>
-            <p className="mt-10 text-2xl text-center underline">{jugement}</p>            
+            <p className="mt-10 text-2xl text-center underline">{jugement}</p>          
             </>
           )}
           {notice ? (
