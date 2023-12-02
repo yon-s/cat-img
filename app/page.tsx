@@ -35,7 +35,6 @@ export default function Home() {
       </head>
       <body className={inter.className}>
         <UploadForm ogp={setOgp}/>
-        <p className="text-center">{`${ogp.img} ${ogp.title} / ${ogp.description}`}</p>
     </body>
     </>
   )
