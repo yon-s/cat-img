@@ -1,5 +1,5 @@
 export type chengeOgps = {
-  img: string
-  title: string
+  img: string,
+  title: string,
   description:string
 }
