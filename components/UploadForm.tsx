@@ -5,8 +5,11 @@ import { DragEvent, useState } from "react";
 import Image from 'next/image';
 import { Judgment } from "@/api/fileJudgment";
 import { lodingMessage } from "@/const/lodingMessage";
+import { Dispatch, SetStateAction } from "react";
+import {chengeOgps} from "@/types/object";
 
-const UploadForm = () => {
+const UploadForm = (props: { ogp: Dispatch<SetStateAction<chengeOgps>> }) => {
+  const { ogp} = props;
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
   const [createImageURL, setCreateImageURL] = useState<string>("");
   const [uploadError, setUploadError] = useState<boolean | null>(null);
@@ -94,7 +97,12 @@ const UploadForm = () => {
         } else {
           setJugement(jugementMessageFlase);
           setNotice(noticeTxt);
-        }
+        } 
+        ogp({
+          img: createImageURL,
+          title: jugement || '', 
+          description: `画像解析の結果${jugement}`,
+        });
       } catch (error) {
         setJudgmentError(true);
         console.error("File upload error:", error);
@@ -202,7 +210,7 @@ const UploadForm = () => {
           )}
           {jugement && (
             <>
-            <p className="mt-10 text-2xl text-center underline">{jugement}</p>            
+            <p className="mt-10 text-2xl text-center underline">{jugement}</p>          
             </>
           )}
           {notice ? (
