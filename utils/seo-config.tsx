@@ -1,6 +1,6 @@
 
 import { Metadata } from "next";
-const url = "https://web.judging-cats.com/";
+import {url} from "@/const/ogp"
 
 export const SEO_DEFAULT: Metadata = {
   metadataBase: new URL(url),
