@@ -5,9 +5,10 @@ import { DragEvent, useState,useEffect } from "react";
 import Image from 'next/image';
 import { Judgment } from "@/api/fileJudgment";
 import { lodingMessage } from "@/const/lodingMessage";
-import {siteName, description, img} from "@/const/ogp";
+import {siteName, description, img, url} from "@/const/ogp";
 import { Dispatch, SetStateAction } from "react";
 import {chengeOgps} from "@/types/object";
+import SnsBtn from '@/components/Sns/SnsBtn'
 
 const UploadForm = (props: { ogp: Dispatch<SetStateAction<chengeOgps>> }) => {
   const { ogp} = props;
@@ -20,6 +21,7 @@ const UploadForm = (props: { ogp: Dispatch<SetStateAction<chengeOgps>> }) => {
   const [notice, setNotice] = useState<string | null>(null);
   
   const descriptionBeforeTxt = '画像解析の結果';
+  const hashtags = "猫,猫のいる暮らし,猫好きさんと繋がりたい,猫のいる生活";
   
   useEffect(() => {
         ogp({
@@ -216,15 +218,16 @@ const UploadForm = (props: { ogp: Dispatch<SetStateAction<chengeOgps>> }) => {
           )}
           {jugement && (
             <>
-            <p className="mt-10 text-2xl text-center underline">{jugement}</p>          
-            </>
-          )}
-          {notice ? (
+            <p className="mt-10 text-2xl text-center underline">{jugement}</p> 
+            {notice ? (
             <p className="text-xs leading-5 text-red-600 text-center mt-2">
               {noticeTxt}
             </p>
-          ) : (
+            ) : (
             ""
+            )}
+            <SnsBtn url={url} title={`${descriptionBeforeTxt}${jugement}`} hashtags={hashtags}/>         
+            </>
           )}
         </div>
       </div>
