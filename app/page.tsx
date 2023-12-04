@@ -5,6 +5,7 @@ import {chengeOgps} from "@/types/object";
 import {siteName, description, img} from "@/const/ogp";
 import { SEO_DEFAULT } from '@/utils/seo-config';
 import { Inter } from 'next/font/google'
+import GoogleAnalytics from '@/components/GoogleAnalytics/GoogleAnalytics'
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -15,6 +16,7 @@ export default function Home() {
   return (
     <> 
       <head>
+        <GoogleAnalytics />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
