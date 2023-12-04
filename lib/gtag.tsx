@@ -1,9 +1,16 @@
-export const GA_TAG_ID = process.env.NEXT_PUBLIC_GA_ID || "";
+type WindowWithDataLayer = Window & {
+  dataLayer: Record<string, unknown>[];
+};
 
-export const IS_GATAG = GA_TAG_ID !== "";
+declare const window: WindowWithDataLayer;
 
-export const pageview = (path: string) => {
-  window.gtag("config", GA_TAG_ID, {
-    page_path: path,
-  });
+export const GTM_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID;
+
+export const pageview = (url: string) => {
+  if (typeof window.dataLayer !== "undefined") {
+    window.dataLayer.push({
+      event: "pageview",
+      page: url,
+    });
+  }
 };
