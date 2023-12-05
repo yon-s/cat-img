@@ -39,8 +39,8 @@ export default function Home() {
         <Suspense>
           <GoogleAnalytics />
         </Suspense>
-        <UploadForm ogp={setOgp}/>
-    </body>
+        <UploadForm setter={setOgp}/>
+      </body>
     </>
   )
 }

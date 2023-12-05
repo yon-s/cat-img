@@ -10,8 +10,8 @@ import { Dispatch, SetStateAction } from "react";
 import {chengeOgps} from "@/types/object";
 import SnsBtn from '@/components/Sns/SnsBtn'
 
-const UploadForm = (props: { ogp: Dispatch<SetStateAction<chengeOgps>> }) => {
-  const { ogp} = props;
+const UploadForm = (props: { setter: Dispatch<SetStateAction<chengeOgps>> }) => {
+  const { setter } = props;
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
   const [createImageURL, setCreateImageURL] = useState<string>("");
   const [uploadError, setUploadError] = useState<boolean | null>(null);
@@ -24,12 +24,12 @@ const UploadForm = (props: { ogp: Dispatch<SetStateAction<chengeOgps>> }) => {
   const hashtags = "猫,猫のいる暮らし,猫好きさんと繋がりたい,猫のいる生活";
   
   useEffect(() => {
-        ogp({
-          img: jugement ? createImageURL : img,
-          title: jugement ? `${jugement} | ${siteName} ` : siteName, 
-          description: jugement ? `${descriptionBeforeTxt}${jugement}` : description,
-        });
-  }, [jugement,createImageURL,ogp]);
+    setter({
+      img: jugement ? createImageURL : img,
+      title: jugement ? `${jugement} | ${siteName} ` : siteName, 
+      description: jugement ? `${descriptionBeforeTxt}${jugement}` : description,
+    });
+  }, [jugement,createImageURL,setter]);
 
   const fileTypeJpeg = "image/jpeg";
   const fileTypePng = "image/png";
@@ -220,11 +220,11 @@ const UploadForm = (props: { ogp: Dispatch<SetStateAction<chengeOgps>> }) => {
             <>
             <p className="mt-10 text-2xl text-center underline">{jugement}</p> 
             {notice ? (
-            <p className="text-xs leading-5 text-red-600 text-center mt-2">
-              {noticeTxt}
-            </p>
+              <p className="text-xs leading-5 text-red-600 text-center mt-2">
+                {noticeTxt}
+              </p>
             ) : (
-            ""
+              ""
             )}
             <SnsBtn url={url} title={`${descriptionBeforeTxt}${jugement}`} hashtags={hashtags}/>         
             </>
