@@ -224,7 +224,7 @@ const UploadForm = (props: { setter: Dispatch<SetStateAction<chengeOgps>> }) => 
                 {noticeTxt}
               </p>
             ) : (
-              ""
+              <></>
             )}
             <SnsBtn url={url} title={`${descriptionBeforeTxt}${jugement}`} hashtags={hashtags}/>         
             </>
